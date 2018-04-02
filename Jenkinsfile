@@ -9,13 +9,14 @@ pipeline {
     stage("Build") {
       steps {
           echo "Building app"
-          //sh "mvn -version" 
+          sh "mvn -B -DskipTests clean package" 
         }
       }
     stage('Test') {
         steps {
             echo "Testing app"
-            //sh "mvn -version"
+            sh "mvn test"
+            junit '**/target/surefire-reports/TEST-*.xml'
         }
     }
     stage('Install in maven'){
@@ -25,6 +26,7 @@ pipeline {
         }
         steps {
             echo 'Installing on maven repository'
+            sh "mvn jar:jar install:install help:evaluate -Dexpression=project.name"
         }
     }
     stage('Archive'){
@@ -34,6 +36,7 @@ pipeline {
         }
         steps {
             echo 'Archive artifacts'
+            archiveArtifacts 'target/*.jar'
         }
     }
   }
