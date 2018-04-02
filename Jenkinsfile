@@ -9,9 +9,7 @@ pipeline {
     stage('Setup database'){
         steps {
           echo "Migrating database"
-          timeout(time: 30, unit: 'SECONDS') {
-                 echo "Testing database migrations"
-            }
+          echo "Testing database migrations"
         }
         post {
             failure {
