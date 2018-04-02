@@ -18,18 +18,23 @@ pipeline {
             //sh "mvn -version"
         }
     }
-  }
-  post {
-    always {
-         echo "Always run"
+    stage('Install in maven'){
+        agent any
+        when{
+            branch 'master'
+        }
+        steps {
+            echo 'Installing on maven repository'
+        }
     }
-    
-    success {
-      echo "Only when we haven't failed running the first stage"
-    }
-
-    failure {
-      echo "Only when we fail running the first stage."
+    stage('Archive'){
+        agent any
+        when{
+            branch 'master'
+        }
+        steps {
+            echo 'Archive artifacts'
+        }
     }
   }
 }
