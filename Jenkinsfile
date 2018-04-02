@@ -6,13 +6,24 @@ pipeline {
   }
   
   stages {
-    stage("Build") {
+    stage('Setup database'){
+        steps {
+          echo "Migrating database"
+          echo "Testing database migrations"
+        }
+        post {
+            failure {
+                echo "Rolling back database migrations"
+            }
+        }
+    }
+    stage('Build Artifact') {
       steps {
           echo "Building app"
           sh "mvn -B -DskipTests clean package" 
         }
-      }
-    stage('Test') {
+    }
+    stage('Test Artifact') {
         steps {
             echo "Testing app"
             sh "mvn test"
@@ -38,6 +49,16 @@ pipeline {
             echo 'Archive artifacts'
             sh "mvn -B -DskipTests clean package" 
             archiveArtifacts 'target/*.jar'
+        }
+    }
+    stage('Setup Kong'){
+        steps {
+            echo "Executing Kong migrations"
+        }
+        post {
+            failure {
+                echo "Rolling back Kong migrations"
+            }
         }
     }
   }
