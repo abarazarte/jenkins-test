@@ -49,7 +49,7 @@ pipeline {
         }
         steps {
             echo 'Archive artifacts'
-            sh "mvn -B -DskipTests clean package"
+            sh "mvn -B -DskipTests clean package" 
             archiveArtifacts 'target/*.jar'
         }
     }
