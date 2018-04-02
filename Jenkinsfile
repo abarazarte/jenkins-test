@@ -17,15 +17,12 @@ pipeline {
           sh "mvn -version" 
         }
       }
-    }
-    
     stage('second stage') {
-      steps {
-        echo "The Maven version should be 3.5.3 again"
-        sh "mvn -version"
-      }
+        steps {
+            echo "The Maven version should be 3.5.3 again"
+            sh "mvn -version"
+        }
     }
-    
     stage('third stage') {
       steps {
         parallel(one: {
@@ -39,22 +36,6 @@ pipeline {
                    echo "But you probably guessed that already."
                  })
       }
-    }
-  }
-  
-  post {
-    // Always runs. And it runs before any of the other post conditions.
-    //always {
-      // Let's wipe out the workspace before we finish!
-      //deleteDir()
-    //}
-    
-    success {
-      echo "Only when we haven't failed running the first stage"
-    }
-
-    failure {
-      echo "Only when we fail running the first stage."
     }
   }
 }
