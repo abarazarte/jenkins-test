@@ -10,10 +10,9 @@ pipeline {
         steps {
           echo "Migrating database"
           dir('pg/proyecto1/') {
-              sh "pwd"
-              sh "./scripts/migrate-status.sh" 
-              sh "./scripts/migrate-up.sh" 
-              sh "./scripts/migrate-status.sh" 
+              sh "./migrate-status.sh" 
+              sh "./migrate-up.sh" 
+              sh "./migrate-status.sh" 
           }
           echo "Testing database migrations"
         }
@@ -27,7 +26,6 @@ pipeline {
       steps {
           echo "Building app"
           dir('app/') {
-              sh "pwd"
               sh "mvn -B -DskipTests clean package" 
           }
         }
@@ -36,7 +34,6 @@ pipeline {
         steps {
             echo "Testing app"
             dir('app/') {
-                sh "pwd"
               sh "mvn test"
             }
         }
