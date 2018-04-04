@@ -27,11 +27,14 @@ pipeline {
         steps {
             echo "Testing app"
             sh "mvn test"
-            junit '**/target/surefire-reports/TEST-*.xml'
+        }
+        post {
+            always {
+                junit '**/target/surefire-reports/TEST-*.xml'
+            }
         }
     }
     stage('Install in maven'){
-        agent any
         when{
             branch 'master'
         }
@@ -41,7 +44,6 @@ pipeline {
         }
     }
     stage('Archive'){
-        agent any
         when{
             branch 'master'
         }
