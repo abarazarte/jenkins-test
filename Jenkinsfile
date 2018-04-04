@@ -14,19 +14,17 @@ pipeline {
               sh "./migrate-up.sh" 
               sh "./migrate-status.sh" 
           }
-          echo "Testing database migrations"
         }
         post {
             failure {
-                echo "Rolling back database migrations"
+                echo "Rollback database migrations"
             }
         }
     }
     stage('Build Artifact') {
       steps {
-          echo "Building app"
-          dir('app/') {
-              sh "mvn -B -DskipTests clean package" 
+          dir('app/api-users/') {
+              sh "./test.sh" 
           }
         }
     }
@@ -51,7 +49,7 @@ pipeline {
         }
         steps {
             echo 'Installing on maven repository'
-            dir('app/') {
+            dir('app/api-users/') {
               sh "mvn jar:jar install:install help:evaluate -Dexpression=project.name"
             }
         }
@@ -62,19 +60,26 @@ pipeline {
         }
         steps {
             echo 'Archive artifacts'
-            dir('app/') {
+            dir('app/api-users/') {
               sh "mvn -B -DskipTests clean package" 
               archiveArtifacts 'target/*.jar'
             }
         }
     }
+    stage('Deliver'){
+        when{
+            branch 'master'
+        }
+        steps {
+            dir('app/api-users/') {
+              sh "./run.sh" 
+            }
+        }
+    }
     stage('Setup Kong'){
         steps {
-            echo "Executing Kong migrations"
-        }
-        post {
-            failure {
-                echo "Rolling back Kong migrations"
+            dir('kong/') {
+                sh "./execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true"
             }
         }
     }
