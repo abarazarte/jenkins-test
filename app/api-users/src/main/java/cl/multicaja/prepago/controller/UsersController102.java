@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/users-1.0.2")
-public class UsersController101 extends UsersController100 {
+public class UsersController102 extends UsersController101 {
 
   @RequestMapping(path="/{param}")
   public ResponseEntity common(@PathVariable("param") String msg) {
