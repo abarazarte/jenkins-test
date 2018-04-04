@@ -1,0 +1,27 @@
+# Requisitos
+
+    -java jdk 8
+    -maven 3.5.0
+
+# Scripts
+
+    ## Crear una migracion nueva
+
+        > ./create-migration.sh
+
+    ## Ejecutar migraciones en modo silecioso
+
+        NOTA: Este modo continua ejecutando todas las migraciones si una de ellas falla
+
+        > ./execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true
+
+    ## Ejecutar migraciones en modo no silecioso
+
+        NOTA: Este modo falla completamente si una de las migraciones falla
+
+        > ./execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence false
+
+    ## Probar apis desde kong
+
+        > curl -i -X GET 'http://localhost:8000/users/ping' --header 'Host: users-1-0-0'
+        > curl -i -X GET 'http://localhost:8000/users/ping' --header 'Host: users-1-0-1'

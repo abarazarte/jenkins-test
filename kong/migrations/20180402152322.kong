@@ -1,0 +1,23 @@
+//    Ejemplos:
+//
+//    execute:
+//    cmd:
+//        curl -i -X POST --url {KONG_HOST}/apis --data 'name=mi-api-1-0-0' --data 'upstream_url={API_HOST}/api/mi-api-1.0.0' --data 'hosts=mi-api-1-0-0'
+//    rollback:
+//    cmd:
+//        curl -i -X DELETE --url {KONG_HOST}/apis/mi-api-1-0-0
+//
+
+execute:
+cmd:
+    curl -i -X POST --url {KONG_HOST}/services --data 'name=users-1-0-0' --data 'url={API_HOST}/users-1.0.0'
+cmd:
+    curl -i -X POST --url {KONG_HOST}/services/users-1-0-0/routes --data 'hosts[]=users-1-0-0' --data 'paths[]=/users'
+
+cmd:
+    curl -i -X POST --url {KONG_HOST}/services --data 'name=users-1-0-1' --data 'url={API_HOST}/users-1.0.1'
+cmd:
+    curl -i -X POST --url {KONG_HOST}/services/users-1-0-0/routes --data 'hosts[]=users-1-0-1' --data 'paths[]=/users'
+
+rollback:
+cmd:
