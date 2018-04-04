@@ -9,6 +9,11 @@ pipeline {
     stage('Setup database'){
         steps {
           echo "Migrating database"
+          dir('pg/proyecto1/') {
+              sh "./migrate-status.sh" 
+              sh "./migrate-up.sh" 
+              sh "./migrate-status.sh" 
+          }
           echo "Testing database migrations"
         }
         post {
@@ -20,17 +25,23 @@ pipeline {
     stage('Build Artifact') {
       steps {
           echo "Building app"
-          sh "mvn -B -DskipTests clean package" 
+          dir('app/') {
+              sh "mvn -B -DskipTests clean package" 
+          }
         }
     }
     stage('Test Artifact') {
         steps {
             echo "Testing app"
-            sh "mvn test"
+            dir('app/') {
+              sh "mvn test"
+            }
         }
         post {
             always {
-                junit '**/target/surefire-reports/TEST-*.xml'
+                dir('app/') {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
             }
         }
     }
@@ -40,7 +51,9 @@ pipeline {
         }
         steps {
             echo 'Installing on maven repository'
-            sh "mvn jar:jar install:install help:evaluate -Dexpression=project.name"
+            dir('app/') {
+              sh "mvn jar:jar install:install help:evaluate -Dexpression=project.name"
+            }
         }
     }
     stage('Archive'){
@@ -49,8 +62,10 @@ pipeline {
         }
         steps {
             echo 'Archive artifacts'
-            sh "mvn -B -DskipTests clean package" 
-            archiveArtifacts 'target/*.jar'
+            dir('app/') {
+              sh "mvn -B -DskipTests clean package" 
+              archiveArtifacts 'target/*.jar'
+            }
         }
     }
     stage('Setup Kong'){
