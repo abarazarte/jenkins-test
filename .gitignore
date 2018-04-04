@@ -18,4 +18,5 @@ target/
 
 !.mvn/wrapper/maven-wrapper.jar
 !pg/mybatis-migrations-3.3.3/lib/*.jar
+!pg/proyecto1/drivers/*.jar
 
