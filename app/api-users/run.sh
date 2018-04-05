@@ -4,7 +4,7 @@ serverPort=3100
 
 #CONSTANTS
 logFile=initServer.log
-dstLogFile=./target/$logFile
+dstLogFile=target/$logFile
 whatToFind="Started Application in"
 msgBuffer="Buffering: "
 msgAppStarted="Application Started... exiting buffer!"
@@ -15,6 +15,13 @@ function stopServer(){
     echo " "
     echo "Stoping process on port: $serverPort"
     fuser -n tcp -k $serverPort > redirection &
+    echo " "
+}
+
+function deleteFiles(){
+    echo "Deleting $dstLogFile"
+    rm -rf $dstLogFile
+
     echo " "
 }
 
@@ -51,8 +58,11 @@ function watch(){
 # 1 - stop server on port ...
 stopServer
 
-# 2 - start server
+# 2 - remove files
+deleteFiles
+
+# 3 - start server
 run
 
-# 3 - watch loading messages until  ($whatToFind) message is found
+# 4 - watch loading messages until  ($whatToFind) message is found
 watch
