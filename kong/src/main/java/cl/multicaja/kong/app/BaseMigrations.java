@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class BaseMigrations {
 
     protected static File DIR_MIGRATIONS = new File("./migrations");
+    protected static File DIR_TEST_MIGRATIONS = new File("./src/test/java/cl/multicaja/kong");
 
     protected static String KONG_HOST = "http://localhost:8001";
     protected static String API_HOST = "http://localhost:3200";

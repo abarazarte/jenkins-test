@@ -14,29 +14,50 @@ public class CreateMigration extends BaseMigrations {
     public static void main(String[] args) {
 
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = df.format(new Date());
 
-        File file = new File(DIR_MIGRATIONS, String.format("%s.kong", df.format(new Date())));
+        File fileMigration = new File(DIR_MIGRATIONS, String.format("%s.kong", id));
 
-        if (file.exists()) {
-            Utils.println("La migración " + file.getAbsolutePath() + " ya existe, intenta nuevamente", Utils.ANSI_RED);
+        if (fileMigration.exists()) {
+            Utils.println("La migración " + fileMigration.getAbsolutePath() + " ya existe, intenta nuevamente", Utils.ANSI_RED);
             return;
+        }
+
+        File fileTest = new File(DIR_TEST_MIGRATIONS, String.format("Test_%s.java", id));
+
+        if (fileTest.exists()) {
+          Utils.println("La clase de test de la migración " + fileTest.getAbsolutePath() + " ya existe, intenta nuevamente", Utils.ANSI_RED);
+          return;
         }
 
         try {
 
-            file.createNewFile();
+            fileMigration.createNewFile();
 
-            String text = IOUtils.toString(CreateMigration.class.getResourceAsStream("/template.kong"), "UTF-8");
+            String textMigration = IOUtils.toString(CreateMigration.class.getResourceAsStream("/template.kong"), "UTF-8");
 
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            writer.write(text);
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileMigration), "UTF-8");
+            writer.write(textMigration);
             writer.flush();
             writer.close();
 
-            Utils.println("Migracion creada: " + file.getAbsolutePath(), Utils.ANSI_GREEN);
+            Utils.println("Migracion creada: " + fileMigration.getAbsolutePath(), Utils.ANSI_GREEN);
+
+            fileTest.createNewFile();
+
+            String textTest = IOUtils.toString(CreateMigration.class.getResourceAsStream("/Test_template.java"), "UTF-8");
+
+            textTest = textTest.replace("Test_template", fileTest.getName().replace(".java", ""));
+
+            OutputStreamWriter writer2 = new OutputStreamWriter(new FileOutputStream(fileTest), "UTF-8");
+            writer2.write(textTest);
+            writer2.flush();
+            writer2.close();
+
+            Utils.println("Test de migracion creada: " + fileTest.getAbsolutePath(), Utils.ANSI_GREEN);
 
         } catch(Exception ex) {
-            Utils.println("Error al crear migracion: " + file.getAbsolutePath(), Utils.ANSI_RED);
+            Utils.println("Error al crear migracion: " + fileMigration.getAbsolutePath(), Utils.ANSI_RED);
             ex.printStackTrace();
         }
     }
