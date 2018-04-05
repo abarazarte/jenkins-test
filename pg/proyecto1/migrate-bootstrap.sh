@@ -5,4 +5,4 @@ export PATH=$PATH:$MIGRATIONS/bin
 
 echo "MyIbatis migrations: $MIGRATIONS"
 
-migrate bootstrap
+migrate bootstrap $1 $2 $3

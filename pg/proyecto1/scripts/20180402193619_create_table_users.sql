@@ -21,7 +21,8 @@ CREATE SCHEMA proyecto1;
 
 CREATE TABLE proyecto1.Users (
     id  SERIAL PRIMARY KEY,
-    name    varchar(100)
+    name    varchar(100),
+    email    varchar(100)
 );
 
 -- //@UNDO

@@ -5,4 +5,4 @@ export PATH=$PATH:$MIGRATIONS/bin
 
 echo "MyIbatis migrations: $MIGRATIONS"
 
-migrate up
+migrate up $1 $2 $3

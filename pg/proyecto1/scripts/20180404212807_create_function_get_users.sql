@@ -14,19 +14,30 @@
 --    limitations under the License.
 --
 
--- // add new_user procedure
+-- // create_function_get_users
 -- Migration SQL that makes the change goes here.
 
-CREATE OR REPLACE FUNCTION proyecto1.add_user(name_ VARCHAR(100)) 
-RETURNS void AS $$
+CREATE OR REPLACE FUNCTION proyecto1.get_users() RETURNS
+TABLE(id INT, name VARCHAR, email VARCHAR) AS $BODY$
 BEGIN
-    INSERT INTO proyecto1.Users(name) VALUES (name_);
+    RETURN QUERY
+    SELECT u.id, u.name, u.email FROM proyecto1.Users as u;
 END;
-$$ LANGUAGE plpgsql;
+$BODY$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION proyecto1.get_user_by_name(p_name VARCHAR(100)) RETURNS
+TABLE(id INT, name VARCHAR, email VARCHAR) AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT u.id, u.name, u.email FROM proyecto1.Users as u where u.name = p_name;
+END;
+$BODY$ LANGUAGE plpgsql;
 
 -- //@UNDO
 -- SQL to undo the change goes here.
 
-DROP FUNCTION IF EXISTS proyecto1.add_user(VARCHAR(100));
+DROP FUNCTION IF EXISTS proyecto1.get_users();
+
+DROP FUNCTION IF EXISTS proyecto1.get_user_by_name(VARCHAR);
 
 

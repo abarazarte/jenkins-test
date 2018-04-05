@@ -14,15 +14,22 @@
 --    limitations under the License.
 --
 
--- // add users test
+-- // add new_user procedure
 -- Migration SQL that makes the change goes here.
 
-select proyecto1.add_user('user1');
-select proyecto1.add_user('user2');
+CREATE OR REPLACE FUNCTION proyecto1.add_user(p_name VARCHAR(100), p_email VARCHAR(100)) RETURNS integer AS $$
+DECLARE
+   r_id integer;
+BEGIN
+    INSERT INTO proyecto1.Users(name, email) VALUES (p_name, p_email)
+    RETURNING id INTO r_id;
+    RETURN r_id;
+END;
+$$ LANGUAGE plpgsql;
 
 -- //@UNDO
 -- SQL to undo the change goes here.
 
-delete from proyecto1.Users where name in ('user1', 'user2');
+DROP FUNCTION IF EXISTS proyecto1.add_user(VARCHAR(100), VARCHAR(100));
 
 
