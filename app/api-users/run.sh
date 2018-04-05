@@ -1,5 +1,5 @@
 #!/bin/bash
-kill -9 $(lsof -i:3100 -t) 2> /dev/null
+echo 'Deploying spreingboot'
 VERSION=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
 echo ${VERSION}
 BUILD_ID=do_not_kill_me
