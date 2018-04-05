@@ -1,10 +1,9 @@
 package cl.multicaja.kong.app;
 
+import cl.multicaja.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.*;
-import java.util.*;
 
 public class RollbackMigrations extends BaseMigrations {
 

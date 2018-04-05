@@ -25,3 +25,13 @@
 
         > curl -i -X GET 'http://localhost:8000/users/ping' --header 'Host: users-1-0-0'
         > curl -i -X GET 'http://localhost:8000/users/ping' --header 'Host: users-1-0-1'
+
+# Ejecución de test
+
+  ## Ejecutar los test en el kong por defecto http://localhost:8000
+
+    > ./test.sh
+
+  ## Ejecutar los test en el kong pasado como parametro
+
+      > ./test.sh -Dkong_host=http://maquina:puerto

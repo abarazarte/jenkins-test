@@ -1,4 +1,4 @@
-package cl.multicaja.kong.app;
+package cl.multicaja.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;

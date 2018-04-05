@@ -1,9 +1,9 @@
-package cl.multicaja.kong;
+package cl.multicaja.test.kong;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Test_template {
+public class Test_template extends TestBase {
 
   @Test
   public void deleteMeTest() {
