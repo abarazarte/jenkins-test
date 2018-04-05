@@ -17,7 +17,7 @@ cmd:
 cmd:
     curl -i -X POST --url {KONG_HOST}/services --data 'name=users-1-0-1' --data 'url={API_HOST}/users-1.0.1'
 cmd:
-    curl -i -X POST --url {KONG_HOST}/services/users-1-0-0/routes --data 'hosts[]=users-1-0-1' --data 'paths[]=/users'
+    curl -i -X POST --url {KONG_HOST}/services/users-1-0-1/routes --data 'hosts[]=users-1-0-1' --data 'paths[]=/users'
 
 rollback:
 cmd:
