@@ -77,7 +77,7 @@ pipeline {
         dir(path: 'app/api-users/') {
           sh '''kill -9 $(lsof -i :3100 | grep LISTEN | awk \'{print $2}\') &
                 BUILD_ID=do_not_kill_me &
-                java -jar target/api-users-$(mvn help:evaluate -Dexpression=project.version | grep "^[^\[]").jar --server.port=3100 &'''
+                java -jar target/api-users-$(mvn -q --non-recursive "-Dexec.executable=cmd" "-Dexec.args=/C echo ${project.version}" "org.codehaus.mojo:exec-maven-plugin:1.3.1:exec").jar --server.port=3100 &'''
           sh './run.sh'
         }
         
