@@ -19,11 +19,8 @@ pipeline {
     }
     stage('Test database migrations') {
       steps {
-        echo 'Testing database migrations'
-      }
-      post {
-        failure {
-          echo 'Rollback database migrations'
+        dir(path: 'pg/proyecto1/') {
+          sh './test.sh development'
         }
       }
     }
