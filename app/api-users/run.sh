@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export BUILD_ID=dontKillMe
 VERSION=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
 serverPort=3100
 
@@ -23,7 +23,7 @@ function run(){
 
    #echo "java -jar target/api-users-${VERSION}.jar --server.port=$serverPort " | at now + 1 minutes
 
-   BUILD_ID=dontKillMe1 nohup nice java -Dhudson.util.ProcessTree.disable=true -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
+   nohup nice java -Dhudson.util.ProcessTree.disable=true -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
 
    echo "COMMAND: nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &"
 
