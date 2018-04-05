@@ -23,7 +23,7 @@ function run(){
 
    #echo "java -jar target/api-users-${VERSION}.jar --server.port=$serverPort " | at now + 1 minutes
 
-   nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
+   BUILD_ID=dontKillMe1 nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
 
    echo "COMMAND: nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &"
 
