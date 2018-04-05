@@ -19,11 +19,15 @@ pipeline {
     }
     stage('Test database migrations') {
       steps {
-        echo 'Testing database migrations'
+        dir(path: 'pg/proyecto1/') {
+          sh 'mvn test -DskipTests=false -Denv=development'
+        }
       }
       post {
-        failure {
-          echo 'Rollback database migrations'
+        always {
+          dir(path: 'pg/proyecto1/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+          }
         }
       }
     }
@@ -75,9 +79,12 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh './run.sh'
+          script{
+              withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
+                  sh './run.sh'
+              }
+          }
         }
-        
       }
     }
     stage('Setup Kong') {
