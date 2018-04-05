@@ -79,7 +79,7 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh 'BUILD_ID=do_not_kill_me & nohup ./run.sh &'
+          sh './run.sh'
         }
         
       }
