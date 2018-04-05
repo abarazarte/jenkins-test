@@ -75,7 +75,6 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh "kill -9 $(lsof -i:3100 -t) 2> /dev/null"
           sh 'BUILD_ID=do_not_kill_me & ./run.sh &'
         }
         
