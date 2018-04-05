@@ -107,11 +107,6 @@ pipeline {
           }
         }
       }
-      steps {
-        dir(path: 'kong/') {
-          echo 'Testing Kong'
-        }
-      }
     }
   }
   tools {
