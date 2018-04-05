@@ -20,7 +20,14 @@ pipeline {
     stage('Test database migrations') {
       steps {
         dir(path: 'pg/proyecto1/') {
-          sh './test.sh development'
+          sh 'mvn test -Denv=development'
+        }
+      }
+      post {
+        always {
+          dir(path: 'pg/proyecto1/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+          }
         }
       }
     }
