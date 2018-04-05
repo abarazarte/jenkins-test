@@ -92,10 +92,21 @@ pipeline {
         dir(path: 'kong/') {
           sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
         }
-        
       }
     }
     stage('Test Kong') {
+      steps {
+        dir(path: 'kong/') {
+          sh 'mvn test -DskipTests=false -Denv=development'
+        }
+      }
+      post {
+        always {
+          dir(path: 'kong/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+          }
+        }
+      }
       steps {
         dir(path: 'kong/') {
           echo 'Testing Kong'
