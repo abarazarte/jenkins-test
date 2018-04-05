@@ -1,5 +1,4 @@
 #!/bin/bash
-export BUILD_ID=dontKillMe
 VERSION=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
 serverPort=3100
 
@@ -23,7 +22,7 @@ function run(){
 
    #echo "java -jar target/api-users-${VERSION}.jar --server.port=$serverPort " | at now + 1 minutes
 
-   nohup nice java -Dhudson.util.ProcessTree.disable=true -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
+   nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &
 
    echo "COMMAND: nohup nice java -jar target/api-users-${VERSION}.jar --server.port=$serverPort $> $dstLogFile 2>&1 &"
 
@@ -47,7 +46,7 @@ function watch(){
 ### FUNCTIONS CALLS
 #####################
 # Use Example of this file. Args: enviroment | port | project name | external resourcce
-# BUILD_ID=dontKillMe /path/to/this/file/api-deploy.sh dev 8082 spring-boot application-localhost.yml
+# JENKINS_NODE_COOKIE=dontKillMe /path/to/this/file/api-deploy.sh dev 8082 spring-boot application-localhost.yml
 
 # 1 - stop server on port ...
 stopServer

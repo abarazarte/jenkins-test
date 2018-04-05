@@ -79,9 +79,12 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh 'BUILD_ID=dontKillMe ./run.sh'
+          script{
+              withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
+                  sh './run.sh'
+              }
+          }
         }
-        
       }
     }
     stage('Setup Kong') {
