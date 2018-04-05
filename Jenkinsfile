@@ -14,9 +14,17 @@ pipeline {
       post {
         failure {
           echo 'Rollback database migrations'
-          
         }
-        
+      }
+    }
+    stage('Test database migrations') {
+      steps {
+        echo 'Testing database migrations'
+      }
+      post {
+        failure {
+          echo 'Rollback database migrations'
+        }
       }
     }
     stage('Build Artifact') {
@@ -34,9 +42,7 @@ pipeline {
       post {
         always {
           echo 'Copying test results'
-          
         }
-        
       }
     }
     stage('Install in maven') {
@@ -69,9 +75,10 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh '''kill $(lsof -i :3100 | grep LISTEN | awk \'{print $2}\') &
+          sh '''kill -9 $(lsof -i :3100 | grep LISTEN | awk \'{print $2}\') &
                 BUILD_ID=do_not_kill_me &
-                ./run.sh &'''
+                java -jar target/api-users-$(mvn help:evaluate -Dexpression=project.version | grep "^[^\[]").jar --server.port=3100 &'''
+          sh './run.sh'
         }
         
       }
@@ -82,6 +89,13 @@ pipeline {
           sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
         }
         
+      }
+    }
+    stage('Test Kong') {
+      steps {
+        dir(path: 'kong/') {
+          echo 'Testing Kong'
+        }
       }
     }
   }
