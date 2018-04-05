@@ -1,6 +1,6 @@
 package cl.multicaja.test.db;
 
-import cl.multicaja.utils.DBUtils;
+import cl.multicaja.utils.db.DBUtils;
 
 /**
  * Clase base de tests

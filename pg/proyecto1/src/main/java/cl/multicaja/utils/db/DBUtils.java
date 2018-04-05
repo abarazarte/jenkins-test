@@ -1,4 +1,4 @@
-package cl.multicaja.utils;
+package cl.multicaja.utils.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;

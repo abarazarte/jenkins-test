@@ -1,6 +1,6 @@
 package cl.multicaja.test.db;
 
-import cl.multicaja.utils.ColumnInfo;
+import cl.multicaja.utils.db.ColumnInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
