@@ -63,6 +63,6 @@
 
     > ./test.sh
 
-  ## Ejecutar los test en el ambiente definido en el paramtro "qa"
+  ## Ejecutar los test en el ambiente definido en el parametro "qa"
 
-      > ./test.sh qa
+      > ./test.sh -Denv=qa

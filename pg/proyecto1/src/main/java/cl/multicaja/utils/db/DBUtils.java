@@ -32,6 +32,8 @@ public final class DBUtils {
         //el ambiente por defecto es development
         String env = System.getProperty("env", "development");
 
+        System.out.println("Entorno de ejecucion es env:" + env);
+
         File dir = new File("./environments");
         File fileConfig = new File(dir, String.format("/%s.properties", env));
 

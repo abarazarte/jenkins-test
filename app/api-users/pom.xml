@@ -19,12 +19,12 @@
 	<repositories>
 
 		<repository>
-			<id>https://mvnrepository.com</id>
+			<id>mvnrepository.com</id>
 			<url>https://mvnrepository.com/</url>
 		</repository>
 
 		<repository>
-			<id>http://download.java.net/maven/2/</id>
+			<id>download.java.net</id>
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
