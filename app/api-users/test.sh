@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean package -DskipTests=false
+mvn compile test -DskipTests=false
