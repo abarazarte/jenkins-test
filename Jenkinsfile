@@ -75,7 +75,7 @@ pipeline {
       }
       steps {
         dir(path: 'app/api-users/') {
-          sh 'kill -9 $(lsof -i :3100 | grep LISTEN | awk \'{print $2}\')'
+          sh 'kill $(lsof -t -i:3100)'
           sh 'BUILD_ID=do_not_kill_me & ./run.sh &'
         }
         
