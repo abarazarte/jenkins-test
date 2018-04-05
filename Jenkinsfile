@@ -20,7 +20,7 @@ pipeline {
     stage('Test database migrations') {
       steps {
         dir(path: 'pg/proyecto1/') {
-          sh 'mvn test -Denv=development'
+          sh 'mvn test -DskipTests=false -Denv=development'
         }
       }
       post {
