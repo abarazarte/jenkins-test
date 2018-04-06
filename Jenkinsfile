@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('Setup database') {
+    stage('Migrate database') {
       steps {
         echo 'Migrating database'
         dir(path: 'pg/proyecto1/') {
@@ -31,15 +31,14 @@ pipeline {
         }
       }
     }
-    stage('Build Artifact') {
+    stage('Build API app') {
       steps {
         dir(path: 'app/api-users/') {
           sh 'mvn -DskipTests clean package'
         }
-        
       }
     }
-    stage('Test Artifact') {
+    stage('Test API app') {
       steps {
         echo 'Testing app'
       }
@@ -49,7 +48,37 @@ pipeline {
         }
       }
     }
-    stage('Install in maven') {
+    stage('Run API app') {
+      steps {
+        dir(path: 'app/api-users/') {
+          script{
+            sh './run.sh'
+          }
+        }
+      }
+    }
+    stage('Migrate kong') {
+      steps {
+        dir(path: 'kong/') {
+          sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
+        }
+      }
+    }
+    stage('Test kong migrations') {
+      steps {
+        dir(path: 'kong/') {
+          sh 'mvn test -DskipTests=false -Denv=development'
+        }
+      }
+      post {
+        always {
+          dir(path: 'kong/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+          }
+        }
+      }
+    }
+    stage('Install artifact in mvn repository') {
       when {
         branch 'master'
       }
@@ -61,7 +90,7 @@ pipeline {
         
       }
     }
-    stage('Archive') {
+    stage('Archive artifact') {
       when {
         branch 'master'
       }
@@ -69,42 +98,6 @@ pipeline {
         echo 'Archive artifacts'
         dir(path: 'app/api-users/') {
           archiveArtifacts 'target/*.jar'
-        }
-        
-      }
-    }
-    stage('Deliver') {
-      when {
-        branch 'master'
-      }
-      steps {
-        dir(path: 'app/api-users/') {
-          script{
-              withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                  sh './run.sh'
-              }
-          }
-        }
-      }
-    }
-    stage('Setup Kong') {
-      steps {
-        dir(path: 'kong/') {
-          sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
-        }
-      }
-    }
-    stage('Test Kong') {
-      steps {
-        dir(path: 'kong/') {
-          sh 'mvn test -DskipTests=false -Denv=development'
-        }
-      }
-      post {
-        always {
-          dir(path: 'kong/') {
-            junit '**/target/surefire-reports/TEST-*.xml'
-          }
         }
       }
     }
