@@ -162,23 +162,28 @@
 
         > seleccionar el tipo `Pipeline` 
 
-        > hacer click en `Ok`
+        > hacer click en el boton `Ok`
 
     
     3- Configurar el pipeline
 
-        > en la seccion `Pipeline`, copiar el contenido del archivo __local_jenkinsfile__ en el input _Script_.
+        - General
 
-        > en la stage `Copy files` del script, modificar la ruta de la carpeta en la cual se encuentra el proyecto
+            > seleccionar `This project is parameterized` y agregar el parametro __PROJECT_FOLDER_PATH__, en la que se colocara como valor por defecto el path absoluto de la carpeta en la cual se encuentra el proyecto
 
-            ```sh
-                sh 'cp -r /home/admin/shared/jenkins-test/* .'  
-            ```
+        - Pipeline
+        
+            > copiar el contenido del archivo __local_jenkinsfile__ en el input _Script_.
+
         > salvar los cambios haciendo click en el boton `Save`
     
     4- Ejecutar el pipeline de forma manual
         
-        > hacer click en `Build Now`
+        > hacer click en `Build with Parameters`
+        
+        > de ser necesario, podemos cambiar el path de la carpeta
+
+        > hacer click en el boton `Build`
 
 # Ejecución del proyecto
 

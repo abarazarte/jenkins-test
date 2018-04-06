@@ -6,7 +6,7 @@ pipeline {
         echo 'Cleaning folder'
         sh 'rm -rf *'
         echo 'Copying files into workspace folder'
-        sh 'cp -r /home/admin/shared/jenkins-test/* .'
+        sh "cp -r ${env.PROJECT_FOLDER_PATH}/* ."
       }
     }
     stage('Migrate database') {
