@@ -5,6 +5,7 @@
     - Postgresql 9.6
     - kong 0.13.0
     - jenkins 2.107.1
+    - java 1.8
 
 # Instalacion de postgresql
 
@@ -146,6 +147,38 @@
                 E-amil address: tu_email
 
             > Presionar el boton: Save and Finish
+
+# Configuración y ejecición de pipeline local
+
+    1- Acceder a jenkins
+
+        > ir a: http://localhost:8099
+
+    2- Crear pipeline
+
+        > hacer click en `New Item`
+
+        > ingresar el nombre del pipeline
+
+        > seleccionar el tipo `Pipeline` 
+
+        > hacer click en `Ok`
+
+    
+    3- Configurar el pipeline
+
+        > en la seccion `Pipeline`, copiar el contenido del archivo __local_jenkinsfile__ en el input _Script_.
+
+        > en la stage `Copy files` del script, modificar la ruta de la carpeta en la cual se encuentra el proyecto
+
+            ```sh
+                sh 'cp -r /home/admin/shared/jenkins-test/* .'  
+            ```
+        > salvar los cambios haciendo click en el boton `Save`
+    
+    4- Ejecutar el pipeline de forma manual
+        
+        > hacer click en `Build Now`
 
 # Ejecución del proyecto
 
