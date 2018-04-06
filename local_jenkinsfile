@@ -1,14 +1,15 @@
 pipeline {
   agent any
   stages {
-    stage('Copy files'){
+    stage('Copy files into workspace'){
       steps {
         echo 'Cleaning folder'
         sh 'rm -rf *'
+        echo 'Copying files into workspace folder'
         sh 'cp -r /home/admin/shared/jenkins-test/* .'
       }
     }
-    stage('Setup database') {
+    stage('Migrate database') {
       steps {
         echo 'Migrating database'
         dir(path: 'pg/proyecto1/') {
@@ -38,7 +39,7 @@ pipeline {
         }
       }
     }
-    stage('Build Artifact') {
+    stage('Build API App') {
       steps {
         dir(path: 'app/api-users/') {
           sh 'mvn -DskipTests clean package'
@@ -46,7 +47,7 @@ pipeline {
         
       }
     }
-    stage('Test Artifact') {
+    stage('Test API App') {
       steps {
         echo 'Testing app'
       }
@@ -56,34 +57,7 @@ pipeline {
         }
       }
     }
-    stage('Install in maven') {
-      when {
-        branch 'master'
-      }
-      steps {
-        echo 'Installing on maven repository'
-        dir(path: 'app/api-users/') {
-          sh 'mvn jar:jar install:install help:evaluate -Dexpression=project.name'
-        }
-        
-      }
-    }
-    stage('Archive') {
-      when {
-        branch 'master'
-      }
-      steps {
-        echo 'Archive artifacts'
-        dir(path: 'app/api-users/') {
-          archiveArtifacts 'target/*.jar'
-        }
-        
-      }
-    }
-    stage('Deliver') {
-      when {
-        branch 'master'
-      }
+    stage('Run API App') {
       steps {
         dir(path: 'app/api-users/') {
           script{
@@ -94,14 +68,14 @@ pipeline {
         }
       }
     }
-    stage('Setup Kong') {
+    stage('Migrate Kong') {
       steps {
         dir(path: 'kong/') {
           sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
         }
       }
     }
-    stage('Test Kong') {
+    stage('Test kong migrations') {
       steps {
         dir(path: 'kong/') {
           sh 'mvn test -DskipTests=false -Denv=development'
@@ -112,6 +86,14 @@ pipeline {
           dir(path: 'kong/') {
             junit '**/target/surefire-reports/TEST-*.xml'
           }
+        }
+      }
+    }
+    stage('Archive artifact') {
+      steps {
+        echo 'Archive artifacts'
+        dir(path: 'app/api-users/') {
+          archiveArtifacts 'target/*.jar'
         }
       }
     }
