@@ -1,9 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('Setup database') {
+    stage('Migrate database') {
       steps {
-        echo 'Migrate database'
+        echo 'Migrating database'
         dir(path: 'pg/proyecto1/') {
           sh './migrate-status.sh'
           sh './migrate-up.sh'
