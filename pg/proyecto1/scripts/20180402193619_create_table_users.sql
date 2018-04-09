@@ -17,7 +17,7 @@
 -- // First migration.
 -- Migration SQL that makes the change goes here.
 
-CREATE SCHEMA proyecto1;
+CREATE SCHEMA IF NOT EXISTS proyecto1;
 
 CREATE TABLE proyecto1.Users (
     id  SERIAL PRIMARY KEY,

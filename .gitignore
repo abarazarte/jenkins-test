@@ -15,6 +15,10 @@ target/
 *.ear
 *.db
 *.log
+dump.sql
+db-id.txt
+
+app/api-users/redirection
 
 !.mvn/wrapper/maven-wrapper.jar
 !pg/mybatis-migrations-3.3.3/lib/*.jar
