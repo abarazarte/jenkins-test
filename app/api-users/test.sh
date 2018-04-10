@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn compile test -DskipTests=false
+mvn clean compile test -DskipTests=false $1 $2 $3

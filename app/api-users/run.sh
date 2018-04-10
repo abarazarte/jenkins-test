@@ -1,4 +1,7 @@
 #!/bin/bash
+
+mvn -DskipTests=true clean package
+
 VERSION=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
 serverPort=3100
 

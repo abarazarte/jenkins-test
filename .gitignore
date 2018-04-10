@@ -15,8 +15,9 @@ target/
 *.ear
 *.db
 *.log
-dump.sql
-db-id.txt
+scripts/dump.sql
+scripts/db-id.txt
+pg/proyecto1/environments/jenkins.properties
 
 app/api-users/redirection
 
