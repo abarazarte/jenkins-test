@@ -1,15 +1,22 @@
 pipeline {
   agent any
   stages {
+    stage('Init database') {
+      steps {
+        echo 'Init database'
+        dir(path: 'scripts') {
+          sh './db-init.sh'
+        }
+      }
+    }
     stage('Migrate database') {
       steps {
         echo 'Migrating database'
         dir(path: 'pg/proyecto1/') {
-          sh './migrate-status.sh'
-          sh './migrate-up.sh'
-          sh './migrate-status.sh'
+          sh './migrate-status.sh --env=jenkins'
+          sh './migrate-up.sh --env=jenkins'
+          sh './migrate-status.sh --env=jenkins'
         }
-        
       }
       post {
         failure {
@@ -20,7 +27,7 @@ pipeline {
     stage('Test database migrations') {
       steps {
         dir(path: 'pg/proyecto1/') {
-          sh 'mvn test -DskipTests=false -Denv=development'
+          sh './test.sh -Denv=jenkins'
         }
       }
       post {
@@ -31,33 +38,32 @@ pipeline {
         }
       }
     }
-    stage('Build API app') {
+    stage('Test API App') {
       steps {
         dir(path: 'app/api-users/') {
-          sh 'mvn -DskipTests clean package'
+          sh './test.sh'
         }
-      }
-    }
-    stage('Test API app') {
-      steps {
-        echo 'Testing app'
       }
       post {
         always {
-          echo 'Copying test results'
-        }
-      }
-    }
-    stage('Run API app') {
-      steps {
-        dir(path: 'app/api-users/') {
-          script{
-            sh './run.sh'
+          dir(path: 'app/api-users/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
           }
         }
       }
     }
-    stage('Migrate kong') {
+    stage('Run API App') {
+      steps {
+        dir(path: 'app/api-users/') {
+          script{
+              withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
+                sh './run.sh'
+              }
+          }
+        }
+      }
+    }
+    stage('Migrate Kong') {
       steps {
         dir(path: 'kong/') {
           sh './execute-migrations.sh -kong_host http://localhost:8001 -api_host http://localhost:3100 -silence true'
@@ -67,7 +73,7 @@ pipeline {
     stage('Test kong migrations') {
       steps {
         dir(path: 'kong/') {
-          sh 'mvn test -DskipTests=false -Denv=development'
+          sh './test.sh -Dkong_host=http://localhost:8000'
         }
       }
       post {
@@ -87,7 +93,6 @@ pipeline {
         dir(path: 'app/api-users/') {
           sh 'mvn jar:jar install:install help:evaluate -Dexpression=project.name'
         }
-        
       }
     }
     stage('Archive artifact') {

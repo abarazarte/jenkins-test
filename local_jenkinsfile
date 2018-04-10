@@ -9,15 +9,22 @@ pipeline {
         sh "cp -r ${env.PROJECT_FOLDER_PATH}/* ."
       }
     }
+    stage('Init database') {
+      steps {
+        echo 'Init database'
+        dir(path: 'scripts') {
+          sh './db-init.sh'
+        }
+      }
+    }
     stage('Migrate database') {
       steps {
         echo 'Migrating database'
         dir(path: 'pg/proyecto1/') {
-          sh './migrate-status.sh'
-          sh './migrate-up.sh'
-          sh './migrate-status.sh'
+          sh './migrate-status.sh --env=jenkins'
+          sh './migrate-up.sh --env=jenkins'
+          sh './migrate-status.sh --env=jenkins'
         }
-        
       }
       post {
         failure {
@@ -28,7 +35,7 @@ pipeline {
     stage('Test database migrations') {
       steps {
         dir(path: 'pg/proyecto1/') {
-          sh 'mvn test -DskipTests=false -Denv=development'
+          sh './test.sh -Denv=jenkins'
         }
       }
       post {
@@ -39,21 +46,17 @@ pipeline {
         }
       }
     }
-    stage('Build API App') {
-      steps {
-        dir(path: 'app/api-users/') {
-          sh 'mvn -DskipTests clean package'
-        }
-        
-      }
-    }
     stage('Test API App') {
       steps {
-        echo 'Testing app'
+        dir(path: 'app/api-users/') {
+          sh './test.sh'
+        }
       }
       post {
         always {
-          echo 'Copying test results'
+          dir(path: 'app/api-users/') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+          }
         }
       }
     }
@@ -62,7 +65,7 @@ pipeline {
         dir(path: 'app/api-users/') {
           script{
               withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                  sh './run.sh'
+                sh './run.sh'
               }
           }
         }
@@ -78,7 +81,7 @@ pipeline {
     stage('Test kong migrations') {
       steps {
         dir(path: 'kong/') {
-          sh 'mvn test -DskipTests=false -Denv=development'
+          sh './test.sh -Dkong_host=http://localhost:8000'
         }
       }
       post {
@@ -94,6 +97,14 @@ pipeline {
         echo 'Archive artifacts'
         dir(path: 'app/api-users/') {
           archiveArtifacts 'target/*.jar'
+        }
+      }
+    }
+    stage('Drop database') {
+      steps {
+        echo 'Drop database'
+        dir(path: 'scripts') {
+          sh './db-drop.sh'
         }
       }
     }
