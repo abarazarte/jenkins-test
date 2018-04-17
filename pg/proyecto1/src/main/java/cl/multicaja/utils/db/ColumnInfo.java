@@ -7,6 +7,7 @@ import java.util.Objects;
 
 /**
  * Informacion de una columna de una tabla de base de datos
+ * @author vutreras
  */
 public class ColumnInfo {
 
@@ -42,8 +43,8 @@ public class ColumnInfo {
     if (this == o) return true;
     if (!(o instanceof ColumnInfo)) return false;
     ColumnInfo that = (ColumnInfo) o;
-    return Objects.equals(getName(), that.getName()) &&
-      Objects.equals(getType(), that.getType()) &&
+    return Objects.equals(String.valueOf(getName()).toLowerCase(), String.valueOf(that.getName()).toLowerCase()) &&
+      Objects.equals(String.valueOf(getType()).toLowerCase(), String.valueOf(that.getType()).toLowerCase()) &&
       Objects.equals(getSize(), that.getSize());
   }
 

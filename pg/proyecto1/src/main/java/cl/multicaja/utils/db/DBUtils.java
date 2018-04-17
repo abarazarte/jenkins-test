@@ -121,8 +121,19 @@ public final class DBUtils {
    * @return
    */
   public Map<String, Object> executeAndGetFirst(String name, Object... params) {
-      List<Map<String, Object>> lstMap = execute(name, 1, params);
+      List<Map<String, Object>> lstMap = execute(name, 1, (RowMapper) null, params);
       return lstMap != null && !lstMap.isEmpty() ? lstMap.get(0) : null;
+  }
+
+  /**
+   * Ejecuta una funcion SQL y retorna el primer resultado como un map, donde el map es la fila del resultado
+   * @param name
+   * @param params
+   * @return
+   */
+  public Object executeAndGetFirst(String name, RowMapper mapper, Object... params) {
+    List lstMap = execute(name, 1, mapper, params);
+    return lstMap != null && !lstMap.isEmpty() ? lstMap.get(0) : null;
   }
 
   /**
@@ -132,7 +143,17 @@ public final class DBUtils {
    * @return
    */
   public List<Map<String, Object>> executeAndGetList(String name, Object... params) {
-      return execute(name, -1, params);
+      return execute(name, -1, (RowMapper) null, params);
+  }
+
+  /**
+   * Ejecuta una funcion SQL y retorna el resultado como una lista de map, donde cada map es una fila del resultado
+   * @param name
+   * @param params
+   * @return
+   */
+  public List executeAndGetList(String name, RowMapper mapper, Object... params) {
+    return execute(name, -1, mapper, params);
   }
 
   /**
@@ -142,11 +163,12 @@ public final class DBUtils {
    * @param params
    * @return
    */
-  public List<Map<String, Object>> execute(String name, int fetchCount, Object... params) {
+  public List execute(String name, int fetchCount, RowMapper mapper, Object... params) {
 
-    List<Map<String, Object>> lstMap = null;
+    List lstMap = null;
     CallableStatement stm = null;
     ResultSet rs = null;
+    Connection conn = null;
 
     try {
 
@@ -158,7 +180,9 @@ public final class DBUtils {
       System.out.println(Arrays.asList(params));
       System.out.println("--------------------------------------------");
 
-      stm = getDataSource().getConnection().prepareCall(spCall);
+      conn = getDataSource().getConnection();
+
+      stm = conn.prepareCall(spCall);
 
       for( int i = 0; i < params.length; i++) {
 
@@ -224,7 +248,11 @@ public final class DBUtils {
           map.put(key, value);
         }
 
-        lstMap.add(map);
+        if (mapper != null) {
+          lstMap.add(mapper.process(map));
+        } else {
+          lstMap.add(map);
+        }
 
         row++;
 
@@ -250,6 +278,12 @@ public final class DBUtils {
           }
         } catch(Exception ex) {
         }
+      try {
+        if (conn != null) {
+          conn.close();
+        }
+      } catch(Exception ex) {
+      }
     }
 
     return lstMap;
@@ -277,9 +311,9 @@ public final class DBUtils {
     boolean exists = false;
     try (ResultSet rs = this.getDataSource().getConnection().getMetaData().getTables(null, schema, tableName, null)) {
       while (rs.next()) {
-        String tName = rs.getString("TABLE_NAME");
-        String tSchema = rs.getString("TABLE_SCHEM");
-        if (tName != null && tName.equalsIgnoreCase(tableName) && tSchema != null && tSchema.equalsIgnoreCase(schema)) {
+        String tName = String.valueOf(rs.getString("TABLE_NAME")).toLowerCase();
+        String tSchema = String.valueOf(rs.getString("TABLE_SCHEM")).toLowerCase();
+        if (tableName.toLowerCase().equals(tName) && schema.toLowerCase().equals(tSchema)) {
           exists = true;
           break;
         }

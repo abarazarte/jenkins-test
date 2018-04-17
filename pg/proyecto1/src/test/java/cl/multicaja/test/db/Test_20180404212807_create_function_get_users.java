@@ -1,5 +1,6 @@
 package cl.multicaja.test.db;
 
+import cl.multicaja.utils.db.RowMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
@@ -21,6 +22,33 @@ public class Test_20180404212807_create_function_get_users extends TestBase {
 
         Assert.assertTrue("Deberia existir el usuario por nombre", res2.toString().contains(name));
         Assert.assertTrue("Deberia existir el usuario por email", res2.toString().contains(email));
+    }
+
+    @Test
+    public void checkGetUsersWithRowMapper() {
+
+      String name = String.format("user%s", Math.random());
+      String email = String.format("user%s@mail.com", Math.random());
+
+      Integer res = (Integer)dbUtils.executeAndGetFirst("proyecto1.add_user", new RowMapper() {
+        @Override
+        public Object process(Map<String, Object> row) {
+          return row.get("result");
+        }
+      }, name, email);
+
+      Assert.assertNotNull("Ha retornado un valor", res);
+      Assert.assertTrue("Deberia retornar un id", res > 0);
+
+      List res2 = dbUtils.executeAndGetList("proyecto1.get_users", new RowMapper() {
+        @Override
+        public Object process(Map<String, Object> row) {
+          return row;
+        }
+      });
+
+      Assert.assertTrue("Deberia existir el usuario por nombre", res2.toString().contains(name));
+      Assert.assertTrue("Deberia existir el usuario por email", res2.toString().contains(email));
     }
 
     @Test
