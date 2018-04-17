@@ -121,8 +121,8 @@ public final class DBUtils {
    * @return
    */
   public Map<String, Object> executeAndGetFirst(String name, Object... params) {
-      List<Map<String, Object>> lstMap = execute(name, 1, (RowMapper) null, params);
-      return lstMap != null && !lstMap.isEmpty() ? lstMap.get(0) : null;
+      List lstMap = executeAndGetList(name, 1, (RowMapper) null, params);
+      return lstMap != null && !lstMap.isEmpty() ? (Map<String, Object>)lstMap.get(0) : null;
   }
 
   /**
@@ -132,7 +132,7 @@ public final class DBUtils {
    * @return
    */
   public Object executeAndGetFirst(String name, RowMapper mapper, Object... params) {
-    List lstMap = execute(name, 1, mapper, params);
+    List lstMap = executeAndGetList(name, 1, mapper, params);
     return lstMap != null && !lstMap.isEmpty() ? lstMap.get(0) : null;
   }
 
@@ -143,7 +143,7 @@ public final class DBUtils {
    * @return
    */
   public List<Map<String, Object>> executeAndGetList(String name, Object... params) {
-      return execute(name, -1, (RowMapper) null, params);
+      return (List<Map<String, Object>>)executeAndGetList(name, -1, (RowMapper) null, params);
   }
 
   /**
@@ -153,7 +153,7 @@ public final class DBUtils {
    * @return
    */
   public List executeAndGetList(String name, RowMapper mapper, Object... params) {
-    return execute(name, -1, mapper, params);
+    return executeAndGetList(name, -1, mapper, params);
   }
 
   /**
@@ -163,7 +163,7 @@ public final class DBUtils {
    * @param params
    * @return
    */
-  public List execute(String name, int fetchCount, RowMapper mapper, Object... params) {
+  public List executeAndGetList(String name, int fetchCount, RowMapper mapper, Object... params) {
 
     List lstMap = null;
     CallableStatement stm = null;
@@ -266,18 +266,18 @@ public final class DBUtils {
     } catch (SQLException e) {
         e.printStackTrace();
     } finally {
-        try {
-          if (rs != null) {
-            rs.close();
-          }
-        } catch(Exception ex) {
+      try {
+        if (rs != null) {
+          rs.close();
         }
-        try {
-          if (stm != null) {
-            stm.close();
-          }
-        } catch(Exception ex) {
+      } catch(Exception ex) {
+      }
+      try {
+        if (stm != null) {
+          stm.close();
         }
+      } catch(Exception ex) {
+      }
       try {
         if (conn != null) {
           conn.close();
